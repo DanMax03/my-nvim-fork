@@ -1,7 +1,8 @@
 for option_name, value in pairs {
   mouse = '',
-  clipboard = 'unnamedplus',
   timeout = false,
+  clipboard = 'unnamedplus',
+  formatoptions = 'cqjrol',
 
   -- appearance
   cursorline = true,
