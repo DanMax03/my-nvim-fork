@@ -79,7 +79,7 @@ let
         vim.loop.fs_rename(cfg_path, cfg_path .. '_backup_' .. os.date '%H%M%S_%d-%m-%Y')
       end
 
-      vim.system({ 'git', 'clone', repo, cfg_path })
+      vim.fn.system({ 'git', 'clone', repo, cfg_path })
     ''
     + additionalPreInit;
 
