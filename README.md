@@ -209,9 +209,8 @@ Additional arguments, that implemented inside `wrapper.nix`:
 
 #### If you use channels
 
-This solution will work with any type of configuration, but you will lose
-[selene-wrapped](#bonus-selene-wrapped) and also have to update the commit hash
-and the `fetchFromGitHub` hash yourself.
+This solution will work with any type of configuration, but you will have to
+update the commit hash and the `fetchFromGitHub` hash yourself.
 
 ```nix
 # configuration.nix
@@ -243,11 +242,6 @@ and the `fetchFromGitHub` hash yourself.
   ];
 }
 ```
-
-### Bonus: [selene](https://github.com/Kampfkarren/selene)-wrapped
-
-Overlay also provides a wrapped selene binary that runs with the `--config`
-flag. The configuration can be found [here](/selene).
 
 ### FAQ
 
