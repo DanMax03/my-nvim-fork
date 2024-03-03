@@ -151,6 +151,8 @@ Additional arguments, that implemented inside `wrapper.nix`:
 
 ### Usage example
 
+#### If you use flakes
+
 ```nix
 # flake.nix
 {
@@ -196,6 +198,43 @@ Additional arguments, that implemented inside `wrapper.nix`:
           dockerfile
         ];
       };
+    })
+  ];
+  # add it to environment.systemPackages or wherever you want
+  environment.systemPackages = with pkgs; [
+    my-nvim
+  ];
+}
+```
+
+#### If you use channels
+
+This solution will work with any type of configuration, but you will lose
+[selene-wrapped](#bonus-selene-wrapped) and also have to update the commit hash
+and the `fetchFromGitHub` hash yourself.
+
+```nix
+# configuration.nix
+{ pkgs, inputs, ... }: {
+  nixpkgs.overlays = [
+    (final: prev: {
+      my-nvim =
+        let
+          nvim-overlay = prev.fetchFromGitHub {
+            owner = "name-snrl";
+            repo = "nvim";
+            # This will work, but will probably be out date.
+            #
+            # To update, replace `rev` with the latest repository commit,
+            # set `hash` to the empty string, run the build. Nix will throw
+            # an error with the correct hash, replace the empty string with it.
+            #rev = "f3e632ac63c24fa82c3ac09e7f7a0c7962c012bd";
+            #hash = "sha256-9OgP1e8d3O6W0F0tQe+BdGYghNKpFPjStajFnqp4z4k=";
+          };
+        in
+        final.callPackage "${nvim-overlay}/wrapper.nix" {
+          # your overrides here
+        };
     })
   ];
   # add it to environment.systemPackages or wherever you want
