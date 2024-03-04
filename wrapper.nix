@@ -1,7 +1,6 @@
 {
   lib,
   writeText,
-  symlinkJoin,
   neovimUtils,
   vimPlugins,
   wrapNeovimUnstable,
@@ -20,40 +19,15 @@
   additionalPreInit ? "",
   additionalWrapperArgs ? [ ],
   extraBinPath ? [ ],
-  extraTSParsers ? [ ],
-  rebuildWithTSParsers ? false,
 }:
 
 let
   binPath = lib.makeBinPath ([ git ] ++ extraBinPath);
 
-  bundled-parsers = with vimPlugins.nvim-treesitter-parsers; [
-    c
-    lua
-    vim
-    vimdoc
-    query
-    python
-    bash
-    markdown
-    markdown_inline
-  ];
-
-  parsers = symlinkJoin {
-    name = "nvim-ts-parsers";
-    paths = bundled-parsers ++ extraTSParsers;
-  };
-
   preInit =
     ''
       -- Globals
       vim.g.is_nix_package = 1
-    ''
-    + lib.optionalString (!rebuildWithTSParsers) ''
-      -- Add TS parsers to 'runtimepath'
-      vim.opt.runtimepath:prepend '${parsers}'
-      -- lazy.nvim resets 'rtp', so we need global to set 'rtp' inside cfg
-      vim.g.nix_ts_parsers = '${parsers}'
     ''
     + lib.optionalString (repo != null) ''
       -- Bootstrap cfg
@@ -115,18 +89,6 @@ let
         ++ additionalWrapperArgs;
     };
 
-  neovim-package =
-    if rebuildWithTSParsers then
-      (neovim-unwrapped.override { treesitter-parsers = { }; }).overrideAttrs (
-        oa: {
-          preConfigure =
-            oa.preConfigure
-            + ''
-              cp -f ${parsers}/parser/* $out/lib/nvim/parser/
-            '';
-        }
-      )
-    else
-      neovim-unwrapped;
+  neovim-package = neovim-unwrapped;
 in
 wrapNeovimUnstable neovim-package config
