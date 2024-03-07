@@ -34,19 +34,14 @@ let
       local repo = '${repo}'
       local cfg_path = vim.fn.stdpath 'config'
 
+      print('repo is')
+      print(repo)
+
       if vim.loop.fs_stat(cfg_path) then
-        if
-          vim.fn
-            .system({
-              'env',
-              '-i',
-              'HOME="$HOME"',
-              'bash',
-              '-l',
-              '-c',
-              'git -C ' .. vim.fn.stdpath 'config' .. ' remote get-url origin',
-            })
-            :find(repo, 1, true)
+        output = vim.fn.system({'env', '-i', 'HOME="$HOME"', 'bash', '-l', '-c', 'git -C ' .. cfg_path .. ' remote get-url origin'})
+        print('output is')
+        print(output)
+        if output:find(repo, 1, true)
         then
           return
         end
