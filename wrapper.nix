@@ -33,14 +33,11 @@ let
       -- Bootstrap cfg
       local repo = '${repo}'
       local cfg_path = vim.fn.stdpath 'config'
-      print(repo)
-      print(cfg_path)
 
       if vim.loop.fs_stat(cfg_path) then
-        output = vim.fn.system({'env', '-S', '-i', 'HOME="$HOME"',
-                                '${git}/bin/git', '-C', cfg_path, 'remote', 'get-url', 'origin'})
-        print(output)
-        if output:find(repo, 1, true)
+        origin_url = vim.fn.system({'env', '-S', '-i', 'HOME="$HOME"',
+                                    '${git}/bin/git', '-C', cfg_path, 'remote', 'get-url', 'origin'})
+        if origin_url:find(repo, 1, true)
         then
           return
         end
